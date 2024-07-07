@@ -10,6 +10,12 @@ import { queryKeys } from "@/react-query/constants";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAvailableAppointments } from "../utils";
 
+const commonOptions = {
+  staleTime: 0,
+  gcTime: 5 * 60 * 1000,
+  refetchOnWindowFocus: true,
+};
+
 // for useQuery call
 async function getAppointments(
   year: string,
@@ -78,6 +84,7 @@ export function useAppointments() {
         nextMonthYear.month,
       ],
       queryFn: () => getAppointments(nextMonthYear.year, nextMonthYear.month),
+      ...commonOptions,
     });
   }, [monthYear.year, monthYear.month]);
 
@@ -92,6 +99,7 @@ export function useAppointments() {
     queryKey: [queryKeys.appointments, monthYear.year, monthYear.month],
     queryFn: () => getAppointments(monthYear.year, monthYear.month),
     select: (data) => selectFn(data, showAll),
+    ...commonOptions,
   });
 
   /** ****************** END 3: useQuery  ******************************* */
