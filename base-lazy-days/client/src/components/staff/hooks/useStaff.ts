@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import type { Staff } from "@shared/types";
 
 import { axiosInstance } from "@/axiosInstance";
 import { queryKeys } from "@/react-query/constants";
 import { useQuery } from "@tanstack/react-query";
+import { filterByTreatment } from "../utils";
 
 async function getStaff(): Promise<Staff[]> {
   const { data } = await axiosInstance.get("/staff");
@@ -15,17 +16,21 @@ export function useStaff() {
   const [filter, setFilter] = useState("all");
   const fallback: Staff[] = [];
 
-  const { data = fallback } = useQuery({
+  const selectFn = useCallback(
+    (unfilteredStaff: Staff[]) => {
+      if (filter === "all") {
+        return unfilteredStaff;
+      }
+      return filterByTreatment(unfilteredStaff, filter);
+    },
+    [filter]
+  );
+
+  const { data: staff = fallback } = useQuery({
     queryKey: [queryKeys.staff],
     queryFn: getStaff,
+    select: (data) => selectFn(data),
   });
-
-  const staff =
-    filter === "all"
-      ? data
-      : data.filter((d) =>
-          d.treatmentNames.includes(filter.toLocaleLowerCase())
-        );
 
   return { staff, filter, setFilter };
 }
