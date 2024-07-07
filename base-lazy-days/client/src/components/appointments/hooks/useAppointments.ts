@@ -13,7 +13,6 @@ import { getAvailableAppointments } from "../utils";
 const commonOptions = {
   staleTime: 0,
   gcTime: 5 * 60 * 1000,
-  refetchOnWindowFocus: true,
 };
 
 // for useQuery call
@@ -99,6 +98,8 @@ export function useAppointments() {
     queryKey: [queryKeys.appointments, monthYear.year, monthYear.month],
     queryFn: () => getAppointments(monthYear.year, monthYear.month),
     select: (data) => selectFn(data, showAll),
+    refetchOnWindowFocus: true,
+    refetchInterval: 2 * 1000,
     ...commonOptions,
   });
 
