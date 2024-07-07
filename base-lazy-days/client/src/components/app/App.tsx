@@ -15,6 +15,7 @@ import { UserProfile } from "@/components/user/UserProfile";
 import { queryClient } from "@/react-query/queryClient";
 import { theme } from "@/theme";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export function App() {
   return (
@@ -35,6 +36,7 @@ export function App() {
           </BrowserRouter>
           <ToastContainer />
         </AuthContextProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ChakraProvider>
   );
